@@ -19,10 +19,12 @@ function Ball(x, y, velX, velY, color, size) {
   this.size = size;
 }
 
+//ändrat om formen (graderna) för cirkeln (inte en cirkel längre).
+
 Ball.prototype.draw = function() {
   ctx.beginPath();
   ctx.fillStyle = this.color;
-  ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+  ctx.arc(this.x, this.y, this.size, 0, 2 );
   ctx.fill();
 };
 
@@ -46,6 +48,7 @@ Ball.prototype.update = function() {
 
   this.x += this.velX;
   this.y += this.velY;
+  
 };
 
 Ball.prototype.collisionDetect = function() {
@@ -56,7 +59,12 @@ Ball.prototype.collisionDetect = function() {
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (distance < this.size + balls[j].size) {
-        balls[j].color = this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
+        //krockar en boll med en annan blir bollen med idex 0 större
+        //har man lite tur med rng blir alla bollarna små tillslut
+        balls[Math.floor(Math.random()*balls.length)].size = this.size = (random (1, 1));
+        //tar bort bollen ifall den kolliderar med en annan boll
+        balls.pop(balls[j]);
+       
       }
     }
   }
@@ -64,24 +72,32 @@ Ball.prototype.collisionDetect = function() {
 
 let balls = [];
 
-while(balls.length < 100) {
-  const size = random(2,100);
+//fler bollar
+while(balls.length < 200) {
+  var size = random(10,30);
   let ball = new Ball(
-    // ball position always drawn at least one ball width
-    // away from the adge of the canvas, to avoid drawing errors
     random(0 + size,width - size),
     random(0 + size,height - size),
-    random(-7,7),
-    random(-7,7),
+    random(-799,722),
+    random(-723,732),
     'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
     size
+    
+    
   );
+
   balls.push(ball);
 }
+
+Ball.prototype.biggerAndSmaller = function(){
+  balls[i].size(random (10,30))
+};
 
 function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0,0,width,height);
+
+  
 
   for(let i = 0; i < balls.length; i++) {
     balls[i].draw();
